@@ -117,12 +117,12 @@ struct breakwatch {
 	target_addr64_t addr;
 	size_t size;
 	target_breakwatch_e type;
-	uint32_t reserved[2]; /* For use by the implementing driver */
+	uint32_t reserved[3]; /* For use by the implementing driver */
 #else
 	target_breakwatch_e type;
 	target_addr64_t addr;
 	size_t size;
-	uint32_t reserved[4]; /* For use by the implementing driver */
+	uint32_t reserved[5]; /* For use by the implementing driver */
 #endif
 };
 
