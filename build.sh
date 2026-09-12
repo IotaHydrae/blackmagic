@@ -114,4 +114,4 @@ fi
 echo
 echo "==== 完成 ===="
 echo "烧录地址: bootloader -> 0x08000000, 主固件 -> 0x08004000"
-echo "烧录方法见 $FORK_DIR/docs/烧录方法.md"
+echo "烧录方法见 $FORK_DIR/docs/flashing.md"
