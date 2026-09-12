@@ -28,14 +28,18 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-probe_blackpill_variant = probe.split('-')[-1].to_upper()
+# The variant is the part after the first dash (e.g. F401CC, F401CD, F401CE, F411CE)
+probe_blackpill_variant = probe.split('-')[1].to_upper()
+
+# The PPVision custom revision of the F411CE BlackPill has different LED pin assignments
+probe_blackpill_ppvision = probe == 'blackpill-f411ce-ppvision'
 
 configure_file(
 	input: 'platform.h.in',
 	output: 'platform.h',
 	configuration: {
-		'PLATFORM_IDENT': f'"(BlackPill-@probe_blackpill_variant@) "',
-		'PLATFORM_CLOCK_FREQ': probe == 'blackpill-f411ce' ? 'RCC_CLOCK_3V3_96MHZ' : 'RCC_CLOCK_3V3_84MHZ',
+		'PLATFORM_IDENT': probe_blackpill_ppvision ? '"(BlackPill-F411CE-PPVision) "' : f'"(BlackPill-@probe_blackpill_variant@) "',
+		'PLATFORM_CLOCK_FREQ': probe_blackpill_variant == 'F411CE' ? 'RCC_CLOCK_3V3_96MHZ' : 'RCC_CLOCK_3V3_84MHZ',
 	},
 )
 
@@ -56,6 +60,13 @@ probe_blackpill_args = [
 	f'-DDFU_SERIAL_LENGTH=@probe_blackpill_dfu_serial_length@',
 	f'-DAPP_START=@probe_blackpill_load_address@',
 ]
+
+# The PPVision custom revision of the BlackPill F411CE uses different LED
+# pins (PB13/14/15 and PC13 instead of PC13/14/15 and PA4/PA1) and does not
+# route out the TRST line. Select the matching hardware definitions.
+if probe_blackpill_ppvision
+	probe_blackpill_args += ['-DPPVISION_COPY']
+endif
 
 blackpill_alternative_pinout = get_option('alternative_pinout')
 if blackpill_alternative_pinout != '0'

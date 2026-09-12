@@ -108,6 +108,7 @@ void platform_init(void)
 	gpio_set_output_options(TCK_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, TCK_PIN);
 	gpio_set_output_options(TMS_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, TMS_PIN);
 
+#ifndef PPVISION_COPY
 	/* Pull up TRST pin */
 	gpio_set(TRST_PORT, TRST_PIN);
 	gpio_mode_setup(TRST_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, TRST_PIN);
@@ -116,6 +117,7 @@ void platform_init(void)
 	gpio_set(NRST_PORT, NRST_PIN);
 	gpio_mode_setup(NRST_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, NRST_PIN);
 	gpio_set_output_options(NRST_PORT, GPIO_OTYPE_OD, GPIO_OSPEED_2MHZ, NRST_PIN);
+#endif
 
 	/* Set up LED pins */
 	gpio_mode_setup(LED_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED_IDLE_RUN | LED_ERROR);
@@ -148,7 +150,20 @@ void platform_init(void)
 
 void platform_nrst_set_val(bool assert)
 {
+#ifdef PPVISION_COPY
+	/* The PPVision revision does not statically configure the nRST pin in
+	 * platform_init(), so configure it dynamically here instead. */
+	if (assert) {
+		gpio_mode_setup(NRST_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, NRST_PIN);
+		gpio_set_output_options(NRST_PORT, GPIO_OTYPE_OD, GPIO_OSPEED_2MHZ, NRST_PIN);
+		gpio_clear(NRST_PORT, NRST_PIN);
+	} else {
+		gpio_mode_setup(NRST_PORT, GPIO_MODE_INPUT, GPIO_PUPD_NONE, NRST_PIN);
+		gpio_set(NRST_PORT, NRST_PIN);
+	}
+#else
 	gpio_set_val(NRST_PORT, NRST_PIN, !assert);
+#endif
 }
 
 bool platform_nrst_get_val(void)

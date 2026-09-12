@@ -47,6 +47,7 @@ probe_alias_map = {
 	'blackpill-f401cd': 'common/blackpill-f4',
 	'blackpill-f401ce': 'common/blackpill-f4',
 	'blackpill-f411ce': 'common/blackpill-f4',
+	'blackpill-f411ce-ppvision': 'common/blackpill-f4',
 	'bluepill': 'stlink',
 	'bmp-v1': 'bmp-v2',
 	'bmp-v1-v2': 'bmp-v2',

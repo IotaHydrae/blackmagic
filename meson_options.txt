@@ -8,6 +8,7 @@ option(
 		'blackpill-f401cd',
 		'blackpill-f401ce',
 		'blackpill-f411ce',
+		'blackpill-f411ce-ppvision',
 		'bluepill',
 		'bmp-v3',
 		'ctxlink',

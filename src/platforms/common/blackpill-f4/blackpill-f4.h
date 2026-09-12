@@ -170,6 +170,21 @@ extern bool debug_bmp;
 #define USER_BUTTON_KEY_PORT GPIOA
 #define USER_BUTTON_KEY_PIN  GPIO0
 
+#ifdef PPVISION_COPY
+/*
+ * The PPVision custom revision of the BlackPill F411CE wires the status LEDs
+ * to GPIOB (PB13/PB14/PB15) and the UART activity LED to GPIOC (PC13, or PC1
+ * on alternative pinout 1) instead of the stock PC13-15 / PA4-PA1.
+ * The TRST line is not routed out on this board.
+ */
+#define LED_PORT       GPIOB
+#define LED_IDLE_RUN   GPIO13
+#define LED_ERROR      GPIO14
+#define LED_BOOTLOADER GPIO15
+
+#define LED_PORT_UART GPIOC
+#define LED_UART      PINOUT_SWITCH(GPIO13, GPIO1)
+#else
 #define LED_PORT       GPIOC
 #define LED_IDLE_RUN   GPIO13
 #define LED_ERROR      GPIO14
@@ -177,6 +192,7 @@ extern bool debug_bmp;
 
 #define LED_PORT_UART GPIOA
 #define LED_UART      PINOUT_SWITCH(GPIO4, GPIO1, GPIO4)
+#endif /* PPVISION_COPY */
 
 /* SPI2: PB12/13/14/15 to external chips */
 #define EXT_SPI         SPI2
