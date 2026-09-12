@@ -19,6 +19,8 @@ blackmagic_upgrade
 *.elf
 .vscode
 .gdb_history
+core
+core.*
 src/artifacts/
 
 src/ftd2xx.dll

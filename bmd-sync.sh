@@ -2,9 +2,9 @@
 # 一键同步 blackmagic_fork 与上游官方仓库
 #
 # 用法:
-#   bash sync_upstream.sh            # 拉取上游 + 合并（不推送）
-#   bash sync_upstream.sh --push     # 拉取上游 + 合并 + 推送到 origin
-#   bash sync_upstream.sh --dry-run  # 只查看差异，不改动
+#   bash bmd-sync.sh            # 拉取上游 + 合并（不推送）
+#   bash bmd-sync.sh --push     # 拉取上游 + 合并 + 推送到 origin
+#   bash bmd-sync.sh --dry-run  # 只查看差异，不改动
 #
 # 远程配置:
 #   origin   = git@github.com:IotaHydrae/blackmagic.git   (你的 fork)

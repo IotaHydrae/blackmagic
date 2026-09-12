@@ -2,9 +2,9 @@
 # 自动安装/卸载 Black Magic Probe udev 规则
 #
 # 用法:
-#   bash install-udev-rules.sh           # 安装规则
-#   bash install-udev-rules.sh --uninstall  # 卸载规则
-#   bash install-udev-rules.sh --check   # 只检查当前状态，不修改
+#   bash bmd-udev.sh           # 安装规则
+#   bash bmd-udev.sh --uninstall  # 卸载规则
+#   bash bmd-udev.sh --check   # 只检查当前状态，不修改
 #
 # 规则来源: docs/99-blackmagic.rules
 # 安装目标: /etc/udev/rules.d/99-blackmagic.rules

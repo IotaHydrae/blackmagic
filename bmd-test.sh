@@ -1,6 +1,6 @@
 #!/bin/bash
 # BMP (Black Magic Probe) 固件测试脚本
-# 用法: bash test_bmp.sh
+# 用法: bash bmd-test.sh
 # 会在系统里找到 ttyACM 设备并用 GDB 通过 BMP 的 GDB 接口查询固件状态
 
 set -u

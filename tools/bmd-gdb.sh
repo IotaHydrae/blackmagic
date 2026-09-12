@@ -2,9 +2,9 @@
 # 一键启动 GDB 连接 BMP，设置推荐布局并定位到现场
 #
 # 用法:
-#   bash gdb-bmp.sh                  # 连接 BMP，halt 目标并查看现场（无符号）
-#   bash gdb-bmp.sh your_program.elf # 连接 + 加载符号 + 定位现场
-#   BMP_DEV=/dev/ttyACM0 bash gdb-bmp.sh   # 指定设备（默认自动找 ttyBmpGdb/ttyACM*）
+#   bash bmd-gdb.sh                  # 连接 BMP，halt 目标并查看现场（无符号）
+#   bash bmd-gdb.sh your_program.elf # 连接 + 加载符号 + 定位现场
+#   BMP_DEV=/dev/ttyACM0 bash bmd-gdb.sh   # 指定设备（默认自动找 ttyBmpGdb/ttyACM*）
 #
 # GDB 选择: gdb-multiarch > arm-none-eabi-gdb > gdb（多架构能正确解析 ARM ELF）
 #
