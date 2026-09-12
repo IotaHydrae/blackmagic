@@ -1,0 +1,42 @@
+# Black Magic Probe (BMP) udev rules
+# 适用：PPVision 复刻 BlackPill F411CE (BMP) + STM32 DFU 烧录
+#
+# 安装方法（需要 root，一次性）：
+#   sudo cp 99-blackmagic.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules
+#   sudo udevadm trigger
+#   （若设备已插入，最好重新拔插一次 USB）
+#
+# 效果：
+#   1. BMP 两个串口固定符号链接：/dev/ttyBmpGdb 和 /dev/ttyBmpTarg
+#   2. BMP 固件 (1d50:6018) / BMP bootloader DFU (1d50:6017) 权限放开，无需 root
+#   3. ST 系统 bootloader DFU (0483:df11) 权限放开，dfu-util 无需 root
+#
+# 用 MODE="0666" 直接放开，避免把用户加进 plugdev/dialout 组的麻烦。
+
+ACTION!="add|change|bind", GOTO="blackmagic_rules_end"
+
+# ---------- BMP 串口固定符号链接（GDB 口 + 目标 UART 口） ----------
+# 这样即使插入顺序变化，/dev/ttyBmpGdb 永远是 GDB 接口
+SUBSYSTEM=="tty", ATTRS{interface}=="Black Magic GDB Server", SYMLINK+="ttyBmpGdb"
+SUBSYSTEM=="tty", ATTRS{interface}=="Black Magic UART Port",  SYMLINK+="ttyBmpTarg"
+# 多设备时带序列号后缀区分
+SUBSYSTEM=="tty", ATTRS{interface}=="Black Magic GDB Server", SYMLINK+="ttyBmpGdb%E{ID_SERIAL_SHORT}"
+SUBSYSTEM=="tty", ATTRS{interface}=="Black Magic UART Port",  SYMLINK+="ttyBmpTarg%E{ID_SERIAL_SHORT}"
+
+# ---------- BMP 设备权限 ----------
+# 6017 = BMP bootloader (DFU) 模式
+# 6018 = BMP Application (正常固件) 模式
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1d50", ATTRS{idProduct}=="6017", MODE="0666", GROUP="dialout", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1d50", ATTRS{idProduct}=="6018", MODE="0666", GROUP="dialout", TAG+="uaccess"
+
+# ---------- STM32 系统 bootloader DFU (dfu-util 烧录用) ----------
+# 0483:df11 = ST 芯片内置 ROM bootloader 的 USB DFU 模式
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666", GROUP="dialout", TAG+="uaccess"
+
+# ---------- CMSIS-DAP 探针（可选，若你用它做 SWD 调试） ----------
+# 常见 CMSIS-DAP/DAPLink 的 VID:PID 举例（按需取消注释或补充你的探针 VID:PID）
+# SUBSYSTEMS=="usb", ATTRS{idVendor}=="0d28", ATTRS{idProduct}=="0204", MODE="0666", GROUP="dialout", TAG+="uaccess"
+# SUBSYSTEMS=="usb", ATTRS{idVendor}=="c251", ATTRS{idProduct}=="f001", MODE="0666", GROUP="dialout", TAG+="uaccess"
+
+LABEL="blackmagic_rules_end"
