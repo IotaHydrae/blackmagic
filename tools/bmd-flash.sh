@@ -5,14 +5,18 @@
 #   bash bmd-flash.sh your_program.elf          # 烧录 + 复位运行后退出
 #   bash bmd-flash.sh your_program.elf --interactive  # 烧录后进入 GDB 交互
 #   BMP_DEV=/dev/ttyACM0 bash bmd-flash.sh your_program.elf  # 指定设备
+#   SWD_FREQ=10M bash bmd-flash.sh your_program.elf   # 指定 SWD 频率（默认 10M）
 #
 # 流程:
 #   1. 连接 BMP（自动找 /dev/ttyBmpGdb 或 /dev/ttyACM*）
-#   2. 加载 ELF，扫描 SWD 目标，attach
-#   3. load 写入 Flash（GDB/BMP flash 编程算法，自动处理擦除）
-#   4. 复位并运行（--interactive 时停在复位后，交给你操作）
+#   2. 设置 SWD 频率（monitor frequency，提高烧录速度）
+#   3. 加载 ELF，扫描 SWD 目标，attach
+#   4. load 写入 Flash（GDB/BMP flash 编程算法，自动处理擦除）
+#   5. 复位并运行（--interactive 时停在复位后，交给你操作）
 #
 # GDB 选择: gdb-multiarch > arm-none-eabi-gdb > gdb
+# 频率说明: 固件默认 2MHz，烧录较慢；SWD_FREQ 默认 10M 可显著提速。
+#   若目标/线缆时序不稳，降为 5M 或 2M 重试。
 
 set -u
 
@@ -52,10 +56,15 @@ INTERACTIVE=0
 [ "${2:-}" = "--interactive" ] && INTERACTIVE=1
 echo "烧录镜像: $ELF"
 
+# ---- SWD 频率（默认 10MHz，可环境变量覆盖）----
+SWD_FREQ="${SWD_FREQ:-10M}"
+echo "SWD 频率: $SWD_FREQ"
+
 # ---- 4. 构造 GDB 命令 ----
 CMDS=(
     "set pagination off"
     "target extended-remote $BMP_DEV"
+    "monitor frequency $SWD_FREQ"
     "file $ELF"
     "monitor swd_scan"
     "attach 1"               # attach 会自动 halt 目标
